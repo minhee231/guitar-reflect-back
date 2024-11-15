@@ -15,8 +15,7 @@ public class CurrencyScheduler {
         this.currencyService = currencyService;
     }
 
-    //@Scheduled(cron = "0 0 0 * * ?", zone = "Asia/Seoul")
-    @Scheduled(cron = "0/20 * * * * ?", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 0 * * ?", zone = "Asia/Seoul")
     public void dailyProcess() throws Exception {
         currencyService.downloadFileFromS3();
     }
