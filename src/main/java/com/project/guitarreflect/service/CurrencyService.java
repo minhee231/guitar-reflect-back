@@ -34,9 +34,6 @@ public class CurrencyService {
                            @Value("${aws.s3.access-key}") String accessKey,
                            @Value("${aws.s3.secret-key}") String secretKey,
                            ObjectMapper objectMapper) {
-        log.info(region);
-        log.info(accessKey);
-        log.info(secretKey);
         this.objectMapper = objectMapper;
         AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(accessKey, secretKey);
         this.s3Client = S3Client.builder()
