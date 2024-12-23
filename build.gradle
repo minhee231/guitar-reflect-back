@@ -31,6 +31,7 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 //	implementation 'org.springframework.cloud:spring-cloud-starter-aws:3.0.0'
 	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
+	implementation 'software.amazon.awssdk:lambda:2.20.74'
 	implementation 'software.amazon.awssdk:s3:2.20.74'
 	implementation 'software.amazon.awssdk:auth:2.20.74'
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
