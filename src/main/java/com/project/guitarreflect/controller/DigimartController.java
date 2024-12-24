@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@CrossOrigin("*")
 @RequestMapping("/guitar-store")
+@CrossOrigin("*")
 public class DigimartController {
 
     @Autowired
