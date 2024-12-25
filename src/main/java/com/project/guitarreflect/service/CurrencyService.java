@@ -11,9 +11,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Paths;
 import java.util.Map;
 
@@ -22,7 +20,7 @@ import java.util.Map;
 public class CurrencyService {
     private S3Client s3Client;
     private ObjectMapper objectMapper;
-    private final String localFilePath = "src/main/resources/json/exchange-rates.json";
+    private final String filePath = "json/exchange-rates.json";
 
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
@@ -43,8 +41,6 @@ public class CurrencyService {
                 .region(Region.of(region))
                 .credentialsProvider(StaticCredentialsProvider.create(awsCredentials))
                 .build();
-
-
     }
 
     public void downloadFileFromS3() {
@@ -54,7 +50,7 @@ public class CurrencyService {
                 .build();
 
         try (InputStream s3Stream = s3Client.getObject(getObjectRequest);
-             FileOutputStream fos = new FileOutputStream(localFilePath)) {
+             FileOutputStream fos = new FileOutputStream(filePath)) {
             byte[] buffer = new byte[1024];
             int length;
             while ((length = s3Stream.read(buffer)) > 0) {
@@ -66,9 +62,11 @@ public class CurrencyService {
     }
 
     public Map<String, Object> getLocalData() {
-        try {
-            File file = Paths.get(localFilePath).toFile();
-            return objectMapper.readValue(file, Map.class);
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filePath)) {
+            if (inputStream == null) {
+                throw new FileNotFoundException("리소스를 찾을 수 없습니다");
+            }
+            return objectMapper.readValue(inputStream, Map.class);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
