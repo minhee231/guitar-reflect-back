@@ -3,6 +3,10 @@ package com.project.guitarreflect.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.lambda.LambdaClient;
 import software.amazon.awssdk.services.lambda.model.InvokeRequest;
 import software.amazon.awssdk.services.lambda.model.InvokeResponse;
@@ -19,9 +23,15 @@ public class LambdaService {
     private LambdaClient lambdaClient;
     private ObjectMapper objectMapper;
 
-    public LambdaService() {
-        // Lambda 클라이언트 생성
-        this.lambdaClient = LambdaClient.create();
+    public LambdaService(@Value("${aws.s3.region}") String region,
+                         @Value("${aws.s3.access-key}") String accessKey,
+                         @Value("${aws.s3.secret-key}") String secretKey
+    ) {
+        AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(accessKey,secretKey);
+        this.lambdaClient = LambdaClient.builder()
+                .credentialsProvider(StaticCredentialsProvider.create(awsCredentials))  // 자격 증명 제공
+                .region(Region.of(region))
+                .build();
         this.objectMapper = new ObjectMapper();
     }
 
