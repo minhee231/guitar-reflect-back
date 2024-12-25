@@ -43,30 +43,13 @@ public class CurrencyService {
                 .build();
     }
 
-    public void downloadFileFromS3() {
+    public Map<String, Object> fetchDataFromS3() {
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(bucketName)
                 .key(s3Key)
                 .build();
-
-        try (InputStream s3Stream = s3Client.getObject(getObjectRequest);
-             FileOutputStream fos = new FileOutputStream(filePath)) {
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = s3Stream.read(buffer)) > 0) {
-                fos.write(buffer, 0, length);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public Map<String, Object> getLocalData() {
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filePath)) {
-            if (inputStream == null) {
-                throw new FileNotFoundException("리소스를 찾을 수 없습니다");
-            }
-            return objectMapper.readValue(inputStream, Map.class);
+        try (InputStream s3Stream = s3Client.getObject(getObjectRequest)) {
+            return objectMapper.readValue(s3Stream, Map.class);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
