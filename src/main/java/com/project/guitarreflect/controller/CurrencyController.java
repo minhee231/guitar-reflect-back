@@ -18,8 +18,8 @@ public class CurrencyController {
     @Autowired
     private CurrencyService currencyService;
 
-        @GetMapping("/latest")
+    @GetMapping("/latest")
     public Map<String,Object> getLatest() {
-        return currencyService.getLocalData();
+        return currencyService.fetchDataFromS3();
     }
 }
